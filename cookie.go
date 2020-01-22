@@ -10,7 +10,7 @@ func setCookie(w http.ResponseWriter, cookieName, val string) {
 
 	http.SetCookie(w, &http.Cookie{
 		Name:     cookieName,
-		MaxAge:   60 * 10,
+		MaxAge:   60 * 60 * 24,
 		Value:    encoded,
 		HttpOnly: false,
 	})
