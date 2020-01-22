@@ -138,7 +138,7 @@ func (h LoginGovHandler) serveHTTP(w http.ResponseWriter, r *http.Request) (int,
 		}
 
 		if !h.c.Emails[userStore.Email] {
-			fmt.Printf("[LoginGov] (403) Email not authorized: %s\n", userStore.Email)
+			fmt.Printf("[LoginGov] [Fatal] (403) Email not authorized: %s\n", userStore.Email)
 			return 403, errors.New("Email not authorized!")
 		}
 	}
@@ -198,8 +198,8 @@ func (h LoginGovHandler) serveCallback(w http.ResponseWriter, r *http.Request) (
 	}
 
 	if original_state != state[0] {
-		fmt.Printf("[LoginGov] FATAL! Original state and received state don't match!!")
-		return 500, errors.New("FATAL! Original state and received state don't match!!")
+		fmt.Printf("[LoginGov] [FATAL] Original state and received state don't match!")
+		return 500, errors.New("[LoginGov] [FATAL] Original state and received state don't match!")
 	}
 
 	v := url.Values{
