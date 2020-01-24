@@ -5,6 +5,7 @@ import (
 	"crypto/sha256"
 	b64 "encoding/base64"
 	"encoding/hex"
+	"strings"
 )
 
 func randomHex(n int) (string, error) {
@@ -31,6 +32,15 @@ func genCodeChallenge(length int) (string, string, error) {
 func stringInSlice(a string, list []string) bool {
 	for _, b := range list {
 		if b == a {
+			return true
+		}
+	}
+	return false
+}
+
+func hasPrefixInSlice(compare string, list []string) bool {
+	for _, item := range list {
+		if strings.HasPrefix(compare, item) {
 			return true
 		}
 	}

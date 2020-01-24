@@ -122,7 +122,8 @@ func (h LoginGovHandler) serveHTTP(w http.ResponseWriter, r *http.Request) (int,
 
 	for _, path := range h.c.AuthPaths {
 		serverPath := httpserver.Path(r.URL.Path)
-		if stringInSlice(string(serverPath), h.c.WhitelistPaths) || !serverPath.Matches(path) {
+
+		if hasPrefixInSlice(string(serverPath), h.c.WhitelistPaths) || !serverPath.Matches(path) {
 			continue
 		}
 
