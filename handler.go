@@ -118,14 +118,14 @@ func (h LoginGovHandler) serveHTTP(w http.ResponseWriter, r *http.Request) (int,
 		return h.serveLogin(w, r)
 	}
 
-	userStore, _ := getUserStoreFromCookie(r)
-
 	for _, path := range h.c.AuthPaths {
 		serverPath := httpserver.Path(r.URL.Path)
 
 		if hasPrefixInSlice(string(serverPath), h.c.WhitelistPaths) || !serverPath.Matches(path) {
 			continue
 		}
+
+		userStore, _ := getUserStoreFromCookie(r)
 
 		if userStore == (UserStore{}) {
 			cookie := &http.Cookie{
