@@ -199,8 +199,8 @@ func (h LoginGovHandler) serveCallback(w http.ResponseWriter, r *http.Request) (
 	}
 
 	if original_state != state[0] {
-		fmt.Printf("[LoginGov] [FATAL] Original state and received state don't match!")
-		return 500, errors.New("[LoginGov] [FATAL] Original state and received state don't match!")
+		fmt.Printf("[LoginGov] Original state and received state don't match!")
+		http.Redirect(w, r, "/login", 303)
 	}
 
 	v := url.Values{
