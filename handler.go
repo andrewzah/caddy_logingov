@@ -92,7 +92,7 @@ func (h LoginGovHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) (int,
 	switch {
 	case httpserver.Path(r.URL.Path).Matches(h.c.CallbackPath):
 		return h.serveCallback(w, r)
-	case h.c.LogoutURL != "" && httpserver.Path(r.URL.Path).Matches(h.c.LogoutURL):
+	case httpserver.Path(r.URL.Path).Matches(h.c.LogoutURL):
 		return h.serveLogout(w, r)
 	default:
 		return h.serveHTTP(w, r)
@@ -253,8 +253,17 @@ func (h LoginGovHandler) serveCallback(w http.ResponseWriter, r *http.Request) (
 }
 
 func (h LoginGovHandler) serveLogout(w http.ResponseWriter, r *http.Request) (int, error) {
+	userStore, err := getUserStoreFromCookie(r)
+	if err == nil {
+		fmt.Printf("[LoginGov] Successfully signed out user %s.", userStore.Email)
+	} else {
+		fmt.Printf("[LoginGov] Successfully signed out user.")
+	}
+
 	deleteCookie(w, COOKIE_STATE)
 	deleteCookie(w, COOKIE_CODE)
 	deleteCookie(w, COOKIE_USER_STORE)
+
+	fmt.Printf("[LoginGov] Successfully signed in with user %s\n", userStore.Email)
 	return h.Next.ServeHTTP(w, r)
 }
