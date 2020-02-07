@@ -90,10 +90,10 @@ func (h *LoginGovHandler) makeTokenURL(code, codeVerifier string) (string, error
 
 func (h LoginGovHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) (int, error) {
 	switch {
-	case httpserver.Path(r.URL.Path).Matches(h.c.CallbackPath):
-		return h.serveCallback(w, r)
 	case httpserver.Path(r.URL.Path).Matches(h.c.LogoutURL):
 		return h.serveLogout(w, r)
+	case httpserver.Path(r.URL.Path).Matches(h.c.CallbackPath):
+		return h.serveCallback(w, r)
 	default:
 		return h.serveHTTP(w, r)
 	}
@@ -257,13 +257,22 @@ func (h LoginGovHandler) serveLogout(w http.ResponseWriter, r *http.Request) (in
 	if err == nil {
 		fmt.Printf("[LoginGov] Successfully signed out user %s.", userStore.Email)
 	} else {
-		fmt.Printf("[LoginGov] Successfully signed out user.")
+		fmt.Printf("[LoginGov] Successfully signed out user.\n")
 	}
 
 	deleteCookie(w, COOKIE_STATE)
 	deleteCookie(w, COOKIE_CODE)
 	deleteCookie(w, COOKIE_USER_STORE)
 
-	fmt.Printf("[LoginGov] Successfully signed in with user %s\n", userStore.Email)
-	return h.Next.ServeHTTP(w, r)
+	w.Header().Set("Content-Type", "text/html; charset=utf-8")
+	if userStore != (UserStore{}) {
+		w.Write([]byte("Successfully signed out." + "\n"))
+	} else {
+		w.Write([]byte("Not signed in or an error occurred." + "\n"))
+	}
+
+	//todo: not be ugly
+	w.Write([]byte("<br><br><a href='/'>Home</a>" + "\n"))
+	w.WriteHeader(http.StatusOK)
+	return 200, nil
 }

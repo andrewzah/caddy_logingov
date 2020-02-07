@@ -34,7 +34,7 @@ func getCookie(r *http.Request, cookieName string) (string, error) {
 func deleteCookie(w http.ResponseWriter, cookieName string) {
 	http.SetCookie(w, &http.Cookie{
 		Name:     cookieName,
-		MaxAge:   0,
+		MaxAge:   -1,
 		Value:    "",
 		HttpOnly: false,
 	})
